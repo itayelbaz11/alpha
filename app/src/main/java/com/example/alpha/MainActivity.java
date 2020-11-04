@@ -23,4 +23,10 @@ public class MainActivity extends AppCompatActivity {
         Intent si=new Intent(this,GPS.class);
         startActivity(si);
     }
+
+
+    public void auth(View view) {
+        Intent si=new Intent(this,AuthMenu.class);
+        startActivity(si);
+    }
 }
