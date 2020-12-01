@@ -14,12 +14,17 @@ import android.widget.TextView;
 
 public class pedometer extends AppCompatActivity implements SensorEventListener {
 
-   TextView tv;
-   SensorManager sensorManager;
-   Sensor mStepCounter;
-   boolean isCounterSensorPresent;
-   int stepCount=0;
+    TextView tv;
+    SensorManager sensorManager;
+    Sensor mStepCounter;
+    boolean isCounterSensorPresent;
+    int stepCount=0;
 
+
+    /**
+     * ON CREATE
+     * @param savedInstanceState
+     */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,10 +50,10 @@ public class pedometer extends AppCompatActivity implements SensorEventListener 
 
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
-         if(sensorEvent.sensor==mStepCounter){
-             stepCount=(int) sensorEvent.values[0];
-             tv.setText(String.valueOf(stepCount));
-         }
+        if(sensorEvent.sensor==mStepCounter){
+            stepCount++;
+            tv.setText(String.valueOf(stepCount));
+        }
     }
 
     @Override
@@ -60,7 +65,7 @@ public class pedometer extends AppCompatActivity implements SensorEventListener 
     protected void onResume() {
         super.onResume();
         if(sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)!=null){
-           sensorManager.registerListener(this,mStepCounter,SensorManager.SENSOR_DELAY_NORMAL);
+            sensorManager.registerListener(this,mStepCounter,SensorManager.SENSOR_DELAY_NORMAL);
 
         }
 
@@ -74,7 +79,12 @@ public class pedometer extends AppCompatActivity implements SensorEventListener 
         }
     }
 
+    /**
+     * COUNTING
+     * @param view
+     */
     public void start(View view) {
-
+          stepCount=0;
+          tv.setText(""+stepCount);
     }
 }

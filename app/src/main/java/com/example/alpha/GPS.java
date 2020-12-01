@@ -5,7 +5,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.pm.PackageManager;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
@@ -20,13 +25,13 @@ import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.security.Permissions;
 
-public class GPS extends AppCompatActivity {
+public class GPS extends AppCompatActivity  implements SensorEventListener{
 
     public static final int PERMISSIONS_FINE_LOCATION=99;
     /**
      * references to UI objects
      */
-    TextView tv1,tv2;
+    TextView tv1,tv2,tv3,X,Y,Z;
 
     /**
      * Google's API for location services.
@@ -34,6 +39,11 @@ public class GPS extends AppCompatActivity {
     FusedLocationProviderClient fusedLocationProviderClient;
 
     LocationRequest locationRequest;
+
+    private SensorManager sensorManager;
+    Sensor accelerometer;
+
+    String x,y,z;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +57,10 @@ public class GPS extends AppCompatActivity {
 
         tv1=(TextView) findViewById(R.id.tv1);
         tv2=(TextView) findViewById(R.id.tv2);
+        tv3=(TextView) findViewById(R.id.tv3);
+        X=(TextView) findViewById(R.id.x);
+        Y=(TextView) findViewById(R.id.y);
+        Z=(TextView) findViewById(R.id.z);
 
         /**
          * Set all properties of locationRequest.
@@ -58,6 +72,9 @@ public class GPS extends AppCompatActivity {
         locationRequest.setPriority(100);
 
 
+        sensorManager=(SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        accelerometer=sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        sensorManager.registerListener(GPS.this,accelerometer,SensorManager.SENSOR_DELAY_NORMAL);
 
     }
 
@@ -116,6 +133,11 @@ public class GPS extends AppCompatActivity {
     private void updateUIValues(Location location) {
           tv1.setText("lat:"+String.valueOf(location.getLatitude()));
           tv2.setText("long:"+String.valueOf(location.getLongitude()));
+          tv3.setText("bearing:"+String.valueOf(location.getBearing()));
+          X.setText("X:"+x);
+          Y.setText("Y:"+y);
+          Z.setText("Z:"+z);
+
     }
 
     /**
@@ -124,4 +146,19 @@ public class GPS extends AppCompatActivity {
     public void btn(View view) {
         updateGPS();
     }
+
+
+    @Override
+    public void onSensorChanged(SensorEvent sensorEvent) {
+         x=String.valueOf(sensorEvent.values[0]);
+         y=String.valueOf(sensorEvent.values[1]);
+         z=String.valueOf(sensorEvent.values[2]);
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int i) {
+
+    }
 }
+
+
